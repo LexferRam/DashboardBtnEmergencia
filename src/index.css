@@ -1,0 +1,39 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+th, td{
+  font-size: 11px !important;
+}
+
+th{
+  font-weight: bold !important;
+}
+.MuiListItemText-root>span{
+  font-size: 13px !important;
+}
+
+.MuiDialog-paper>div{
+  font-size: 11px !important;
+}
+
+.MuiInput-input{
+  font-size: 10px !important;
+}
+
+.MuiDialogContent-root .MuiInputBase-input{
+  color:black !important
+}
+
+.MuiDialogContent-root .MuiFormLabel-root.Mui-disabled {
+  color: black !important;
+}
