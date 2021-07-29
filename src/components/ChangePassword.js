@@ -3,6 +3,8 @@ import AuthContext from "../Context/AuthContext/AuthContext";
 import Paper from "@material-ui/core/Paper";
 import Logo from "../logoAlo.png";
 import HttpsIcon from "@material-ui/icons/Https";
+import AutorenewIcon from '@material-ui/icons/Autorenew';
+
 import { Button, TextField } from "@material-ui/core";
 import "../App.css";
 import { makeStyles } from "@material-ui/core/styles";
@@ -24,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Login = (props) => {
+const ChangePassword = (props) => {
   const classes = useStyles();
   const { login,
     codUser,
@@ -64,18 +66,14 @@ const Login = (props) => {
 
   const onSubmit =async (e) => {
     e.preventDefault();
-    login(user);
-  //   const res = await axios.post(
-  //     "https://emergencia24horas.segurospiramide.com/node/express/servicios/api/AutenticarUsuario",
-  //     user
-  //   );
-  // //  if(res.data.data.PASSWORD === user.cPassword){
-  //   await sessionStorage.setItem("DATA",JSON.stringify(res.data.data))
-  //   await sessionStorage.setItem("TOKEN",JSON.stringify(res.data.token))
+    //login(user);
+    const res = await axios.post(
+      "https://emergencia24horas.segurospiramide.com/node/express/servicios/api/AutenticarUsuario",
+      user
+    );
+    await sessionStorage.setItem("DATA",JSON.stringify(res.data.data))
+    await sessionStorage.setItem("TOKEN",JSON.stringify(res.data.token))
     await props.history.push('/Home')
-  //  }else{
-  //    alert('Contraseña invalida')
-  //  }
   };
 
   return (
@@ -87,7 +85,7 @@ const Login = (props) => {
           style={{ width: 400, marginTop: "3%", padding: 20 }}
         >
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <HttpsIcon fontSize="large" style={{ color: "#c15b2a" }} />
+            <AutorenewIcon fontSize="large" style={{ color: "#c15b2a" }} />
             {/*  47c0b6-c15b2a*/}
           </div>
           <form onSubmit={onSubmit} noValidate autoComplete="off">
@@ -103,7 +101,7 @@ const Login = (props) => {
               }}
             >
               <TextField
-                label="Nombre de Usuario"
+                label="Contraseña Actual"
                 type="text"
                 variant="outlined"
                 name="cCodUsr"
@@ -112,9 +110,10 @@ const Login = (props) => {
                 className={classes.root}
                 id="nombUser"
                 onBlur={onBlur}
+                fullWidth
               />
               <TextField
-                label="Contraseña"
+                label="Contraseña Nueva"
                 type="password"
                 variant="outlined"
                 name="cPassword"
@@ -134,7 +133,7 @@ const Login = (props) => {
                 disabled={actBtn}  
                 fullWidth
               >
-                Ingresar
+                Actualizar
               </Button>
             </div>
           </form>
@@ -144,4 +143,4 @@ const Login = (props) => {
   );
 };
 
-export default Login;
+export default ChangePassword;

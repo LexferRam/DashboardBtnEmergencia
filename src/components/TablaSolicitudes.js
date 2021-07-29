@@ -23,7 +23,11 @@ import SearchIcon from '@material-ui/icons/Search';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import BtnExcel from './BtnExcel/ExcelPen';
 import BtnExcelAte from './BtnExcel/ExcelAten';
+import ExportarExcel from './BtnExcel/Exportarexcel';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
+import Tooltip from '@material-ui/core/Tooltip';
 import ModalObs from './ModalObs';
+import "../App.css"
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -137,6 +141,7 @@ function Documentos(props) {
     }
     fetchData();
   }, [])
+
 
   const bloqueaSoli = async (row) => {
     const usuarioautenticado = JSON.parse(sessionStorage.getItem("DATA")).NOMUSR;
@@ -301,7 +306,10 @@ function Documentos(props) {
               type="text"
             />
           </form>
-          <BtnExcel rowsPend={rowsPend} />
+          {/* <BtnExcel rowsPend={rowsPend} /> */}
+          <ExportarExcel 
+          titulo="Solicitudes Pendientes" 
+          enviarjsonGrid={rowsPend} />
         </div>
       </div>
       <TableContainer component={Paper} style={{boxShadow: "10px 10px 10px 0 rgb(0 0 0 / 12%)"}}>
@@ -332,14 +340,16 @@ function Documentos(props) {
               <TableCell align="center" className={classes.none}>Acción</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
+          <TableBody className="table">
             {/* {rowsPend.map((row) => ( */}
             {rowsPend.filter((item) =>{
               if(busqueda == ""){
                 return item
               }else if(
+                // alert(item.DESCSTATUS)
                 item.id.toString().includes(busqueda) ||
-                JSON.stringify(item.DESCSTATUS).includes(busqueda.toUpperCase()) ||
+                JSON.stringify(item.DESCSTATUS).includes(busqueda.toUpperCase()) || //STSSOLI
+                JSON.stringify(item.STSSOLI).includes(busqueda.toUpperCase()) ||
                 JSON.stringify(item.NOMUSR).includes(busqueda.toUpperCase()) ||
                 JSON.stringify(item.NOMBRE).includes(busqueda.toUpperCase()) ||
                 JSON.stringify(item.INDCONTASESOR).includes(busqueda.toUpperCase()) ||
@@ -395,13 +405,18 @@ function Documentos(props) {
                       rowSelect(row)
                       bloqueaSoli(row)
                     }}>
-                      <CreateIcon size="small" color="primary" />
+                      <Tooltip title="Atender Solicitud">
+                        <CreateIcon size="small" color="primary" />
+                      </Tooltip>
                     </IconButton>
                     <IconButton aria-label="descargar" size="small" onClick={() => {
                       rowSelect(row)
                       abrirMapa()
                     }}>
-                      <SearchIcon size="small" color="primary" />
+                      {/* LocationOnIcon */}
+                      <Tooltip title="Ubicación Geográfica">
+                        <LocationOnIcon size="small" color="primary" />
+                      </Tooltip>
                     </IconButton>
                   </TableCell>
                 </TableRow>
@@ -427,6 +442,7 @@ function Documentos(props) {
                 JSON.stringify(item.DIRECCION).includes(busqueda.toUpperCase()) ||
                 JSON.stringify(item.FECREG).includes(busqueda.toUpperCase()) ||
                 JSON.stringify(item.FECSTS).includes(busqueda.toUpperCase()) ||
+                JSON.stringify(item.STSSOLI).includes(busqueda.toUpperCase()) ||
                 JSON.stringify(item.EMPRESA).includes(busqueda.toUpperCase())   
                 ){
                 return item
@@ -454,7 +470,11 @@ function Documentos(props) {
               type="text"
             />
           </form>
-          <BtnExcelAte rowsAte={rowsAte}/> 
+          {/* <BtnExcelAte rowsAte={rowsAte}/>  */}
+          <ExportarExcel 
+            titulo="Solicitudes Atendidas" 
+            enviarjsonGrid={rowsAte} 
+          />
        </div>
        
       </div>
@@ -483,7 +503,7 @@ function Documentos(props) {
               <TableCell align="center" className={classes.none}>Acción</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
+          <TableBody className="table">
             {/* {rowsPend.map((row) => ( */}
             {rowsAte.filter((item) =>{
               if(busquedaAte == ""){

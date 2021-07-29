@@ -37,3 +37,7 @@ th{
 .MuiDialogContent-root .MuiFormLabel-root.Mui-disabled {
   color: black !important;
 }
+
+.table>tr:nth-of-type(odd) {
+  background-color: #f3f2f8 !important;
+}
