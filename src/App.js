@@ -21,7 +21,8 @@ import LocationOnIcon from '@material-ui/icons/LocationOn';
 import MapaView from './components/MapaView';
 import AuthContext from "./Context/AuthContext/AuthContext";
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import Logo from "./logoAlo.png";
+import LogoPira from "./logopira.svg";
+import LogoOcea from "./logoocea.png";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -148,7 +149,9 @@ export default function PersistentDrawerLeft(props) {
               </>
             ) : (null)}
           </Typography>
-          <img src={Logo} style={{width:100, heigth:20}}/>
+          <img src={LogoPira} style={{width:140,marginLeft:10}}/>
+          <img src={LogoOcea} style={{width:140,marginLeft:10}}/>
+          
           <h7 style={{ cursor: "pointer",marginLeft:20 }} onClick={() => {
             sessionStorage.clear()
             props.history.push('/')

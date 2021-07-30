@@ -21,13 +21,13 @@ import AlertDialog from './Alerta';
 import CreateIcon from '@material-ui/icons/Create';
 import SearchIcon from '@material-ui/icons/Search';
 import GetAppIcon from '@material-ui/icons/GetApp';
-import BtnExcel from './BtnExcel/ExcelPen';
-import BtnExcelAte from './BtnExcel/ExcelAten';
 import ExportarExcel from './BtnExcel/Exportarexcel';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import Tooltip from '@material-ui/core/Tooltip';
 import ModalObs from './ModalObs';
 import "../App.css"
+import BotonesAppsExternas from './BotonesLinksApps'
+
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -263,7 +263,6 @@ function Documentos(props) {
   const abrirMapa =async () =>{
     setOpenMap(true)
   }
-
   const onChange = (e) => {
     setBusqueda(e.target.value)
   }
@@ -291,10 +290,10 @@ function Documentos(props) {
       />
       <ModalMapa setOpenMap={setOpenMap} openMap={openMap} rowsSelecc={rowsSelecc} />
       <div style={{ margin: 15, color: '#396388' }}>
-        <Typography variant="h6" noWrap style={{ color: '#396388', textTransform: "uppercase" }}>
-          Solicitudes Pendientes
-       </Typography>
-
+        <BotonesAppsExternas />
+        <Typography variant="h6" noWrap style={{ color: '#396388', textTransform: "uppercase", marginTop: 30 }}>
+            Solicitudes Pendientes
+        </Typography>
         <div style={{ display: 'flex' }}>
           <form noValidate autoComplete="off" style={{ marginTop: 10 }}>
             <TextField

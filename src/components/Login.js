@@ -1,7 +1,9 @@
 import React, { useContext, useState } from "react";
 import AuthContext from "../Context/AuthContext/AuthContext";
 import Paper from "@material-ui/core/Paper";
-import Logo from "../logoAlo.png";
+import Logo from "../alojose.png";
+import LogoPira from "../logopira.svg";
+import LogoOcea from "../logoocea.png";
 import HttpsIcon from "@material-ui/icons/Https";
 import { Button, TextField } from "@material-ui/core";
 import "../App.css";
@@ -20,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
   btn: {
     marginBottom: 30,
-    borderRadius: "50px",
+    borderRadius: "50",
   },
 }));
 
@@ -64,37 +66,33 @@ const Login = (props) => {
 
   const onSubmit =async (e) => {
     e.preventDefault();
-    login(user);
-  //   const res = await axios.post(
-  //     "https://emergencia24horas.segurospiramide.com/node/express/servicios/api/AutenticarUsuario",
-  //     user
-  //   );
-  // //  if(res.data.data.PASSWORD === user.cPassword){
-  //   await sessionStorage.setItem("DATA",JSON.stringify(res.data.data))
-  //   await sessionStorage.setItem("TOKEN",JSON.stringify(res.data.token))
+    //login(user);
+    const res = await axios.post(
+      "https://emergencia24horas.segurospiramide.com/node/express/servicios/api/AutenticarUsuario",
+      user
+    );
+    await sessionStorage.setItem("DATA",JSON.stringify(res.data.data))
+    await sessionStorage.setItem("TOKEN",JSON.stringify(res.data.token))
     await props.history.push('/Home')
-  //  }else{
-  //    alert('Contraseña invalida')
-  //  }
   };
 
   return (
     <div className="fondo">
       <Alerta open={open} setOpen={setOpen} msnAlert={msnAlert}/>
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <div
-          // elevation={24}
-          style={{ width: 400, marginTop: "3%", padding: 20 }}
+        <Paper
+          elevation={24}
+          style={{ width: 400, marginTop: "8%", padding: 20 }}
         >
           <div style={{ display: "flex", justifyContent: "center" }}>
             <HttpsIcon fontSize="large" style={{ color: "#c15b2a" }} />
             {/*  47c0b6-c15b2a*/}
           </div>
           <form onSubmit={onSubmit} noValidate autoComplete="off">
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <img src={Logo} style={{ width: 150 }} />
-            </div>
-
+              <div style={{ display: "flex", justifyContent: "center",flexDirection:'row', margin:20}}>
+                <img src={LogoPira} style={{ width: 170 }} />
+                <img src={LogoOcea} style={{ width: 170 }} />
+              </div>
             <div
               style={{
                 display: "flex",
@@ -122,7 +120,6 @@ const Login = (props) => {
                 onChange={onChange}
                 className={`${classes.root} ${classes.text}`}
                 disabled={actPass}    
-                fullWidth
               />
 
               <Button
@@ -132,13 +129,12 @@ const Login = (props) => {
                 // startIcon={<CloudUploadIcon />}
                 className={classes.btn}
                 disabled={actBtn}  
-                fullWidth
               >
                 Ingresar
               </Button>
             </div>
           </form>
-        </div>
+        </Paper>
       </div>
     </div>
   );

@@ -97,3 +97,8 @@ font-size: 14px !important;
 td, th {
   font-size: 10px!important;
 }
+
+.MuiAppBar-colorPrimary {
+  color: #fff;
+  background-color: #606273 !important;
+}
