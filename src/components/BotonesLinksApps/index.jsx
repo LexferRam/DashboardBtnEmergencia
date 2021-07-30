@@ -119,8 +119,7 @@ export default function(){
                   variant="outlined"
                   color="default"
                   // className={classes.button}
-                  startIcon={<img src={Aocea} 
-                  style={{ width:30,margin:5,height:30}} />}
+                  startIcon={<img src={Aocea} style={{ width:30,margin:5,height:30}} />}
                   style={{ fontSize:10, borderRadius:"50px"}}
                 >
                  Ir ACSEL Oceánica
