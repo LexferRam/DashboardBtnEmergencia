@@ -27,7 +27,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import ModalObs from './ModalObs';
 import "../App.css"
 import BotonesAppsExternas from './BotonesLinksApps'
-
+//SWR
+import useSWR from 'swr'
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -61,12 +62,59 @@ function Documentos(props) {
   const [open, setOpen] = useState(false);
   const [openMap, setOpenMap] = useState(false);
   // const [load, setLoad] = useState(false);
-  const [openBd, setOpenBd] = useState(true);
+  const [openBd, setOpenBd] = useState(false);
   const [openA, setOpenA] = React.useState(false);
   const [msnAlert, setMsnAlert] = React.useState("");
   const [busqueda, setBusqueda] = useState("");
   const [busquedaAte, setBusquedaAte] = useState("");
   const [openObs, setOpenObs] = useState(false);
+
+  
+  const descPerf =sessionStorage.getItem("DATA") ? JSON.parse(sessionStorage.getItem("DATA")).DESCPERFIL : null;
+  const codUsuario =sessionStorage.getItem("DATA") ? JSON.parse(sessionStorage.getItem("DATA")).CODUSR : null;
+  const nomusr =sessionStorage.getItem("DATA") ? JSON.parse(sessionStorage.getItem("DATA")).NOMUSR : null;
+  
+  
+  //SWR
+  const fetcher = url => axios.post('https://emergencia24horas.segurospiramide.com/node/express/servicios/api/BuscaTodasSolicitudes',{
+    "cStsSoli": 0,
+    "dFecDesde": "",
+    "dFecHasta": "",
+    "cCodUsr": "0"
+  }).then(res => res.data)
+
+  const {data} = useSWR('/api/BuscaTodasSolicitudes',fetcher,{refreshInterval:5000})
+  const dataOrdenada = data?.sort( (a, b) => a - b )
+  const arrayRow = dataOrdenada?.map((item) => {
+    return {
+      id: item.IDSOLICITUD,
+      NUMID: item.NUMID,
+      NOMBRE: item.NOMBRE,
+      DESCPAIS: item.DESCPAIS,
+      DESCESTADO: item.DESCESTADO,
+      DESCCIUDAD: item.DESCCIUDAD,
+      DIRECCION: item.DIRECCION,
+      PUNTOREFERENCIA: item.PUNTOREFERENCIA,
+      CELULAR: item.CELULAR,
+      TELEFHAB: item.TELEFHAB,
+      STSSOLI: item.STSSOLI,
+      FECSTS: item.FECSTS,
+      CODUSR:item.CODUSR,
+      NOMUSR:item.NOMUSR,
+      FECREG: item.FECREG,
+      LATITUD: item.LATITUD,
+      LONGITUD: item.LONGITUD,
+      EMPRESA: item.EMPRESA,
+      DESCRIPATENCION: item.DESCRIPATENCION,
+      INDCONTASESOR: item.INDCONTASESOR,
+      OBSERVACION: item.OBSERVACION,
+      NOMBRE_INTER: item.NOMBRE_INTER,
+      CELULARASESOR: item.CELULARASESOR,
+      DESCSTATUS: item.DESCSTATUS,
+      EMAILASEG: item.EMAILASEG
+    };
+  })
+  console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$'+JSON.stringify(arrayRow)) 
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -88,65 +136,11 @@ function Documentos(props) {
   const rowSelect = (row) => {
     setRowsSelecc(row); 
   }
-  
-    const descPerf =sessionStorage.getItem("DATA") ? JSON.parse(sessionStorage.getItem("DATA")).DESCPERFIL : null;
-    const codUsuario =sessionStorage.getItem("DATA") ? JSON.parse(sessionStorage.getItem("DATA")).CODUSR : null;
- 
-  useEffect(() => {
-
-    const fetchData = async () => {
-      const res = await axios.post('https://emergencia24horas.segurospiramide.com/node/express/servicios/api/BuscaTodasSolicitudes', {
-        "cStsSoli": 0,
-        "dFecDesde": "",
-        "dFecHasta": "",
-        "cCodUsr": "0"
-      })
-      const dataOrdenada = res.data.sort( (a, b) => a - b )
-      const arrayRow = dataOrdenada.map((item) => {
-        return {
-          id: item.IDSOLICITUD,
-          NUMID: item.NUMID,
-          NOMBRE: item.NOMBRE,
-          DESCPAIS: item.DESCPAIS,
-          DESCESTADO: item.DESCESTADO,
-          DESCCIUDAD: item.DESCCIUDAD,
-          DIRECCION: item.DIRECCION,
-          PUNTOREFERENCIA: item.PUNTOREFERENCIA,
-          CELULAR: item.CELULAR,
-          TELEFHAB: item.TELEFHAB,
-          STSSOLI: item.STSSOLI,
-          FECSTS: item.FECSTS,
-          CODUSR:item.CODUSR,
-          NOMUSR:item.NOMUSR,
-          FECREG: item.FECREG,
-          LATITUD: item.LATITUD,
-          LONGITUD: item.LONGITUD,
-          EMPRESA: item.EMPRESA,
-          DESCRIPATENCION: item.DESCRIPATENCION,
-          INDCONTASESOR: item.INDCONTASESOR,
-          OBSERVACION: item.OBSERVACION,
-          NOMBRE_INTER: item.NOMBRE_INTER,
-          CELULARASESOR: item.CELULARASESOR,
-          DESCSTATUS: item.DESCSTATUS,
-          EMAILASEG: item.EMAILASEG
-        };
-      })
-      setRows(arrayRow.filter(ele => ele.STSSOLI != "ATE"))
-      if(descPerf == "SUPERVISOR"){
-         setRowsAte(arrayRow.filter(ele => ele.STSSOLI != "PEN" && ele.STSSOLI != "BLO" && ele.STSSOLI != "NCP"))
-      }else{ 
-         setRowsAte(arrayRow.filter(ele => ele.STSSOLI != "PEN" && ele.STSSOLI != "BLO" && ele.CODUSR == codUsuario && ele.STSSOLI != "NCP"))
-      }
-      setOpenBd(false)
-    }
-    fetchData();
-  }, [])
-
-
   const bloqueaSoli = async (row) => {
     const usuarioautenticado = JSON.parse(sessionStorage.getItem("DATA")).NOMUSR;
     const codUsuario = JSON.parse(sessionStorage.getItem("DATA")).CODUSR;
     const descPerf = JSON.parse(sessionStorage.getItem("DATA")).DESCPERFIL;
+   
     setOpenBd(true)
     const res = await axios.post("https://emergencia24horas.segurospiramide.com/node/express/servicios/api/BuscaSolicitud", {
       "nIdSolicitud": row.id
@@ -215,7 +209,7 @@ function Documentos(props) {
       setOpenA(true)
       setMsnAlert(`Solicitud bloqueada por ${res.data[0].NOMUSR}`)
       const fetchData = async () => {
-        const res = await axios.post('https://emergencia24horas.segurospiramide.com/node/express/servicios/api/BuscaTodasSolicitudes', {
+        const res = await axios.post(process.env.REACT_APP_BASE_API_URL+'/api/BuscaTodasSolicitudes', {
           "cStsSoli": 0,
           "dFecDesde": "",
           "dFecHasta": "",
@@ -341,7 +335,7 @@ function Documentos(props) {
           </TableHead>
           <TableBody className="table">
             {/* {rowsPend.map((row) => ( */}
-            {rowsPend.filter((item) =>{
+            {arrayRow?.filter(ele => ele.STSSOLI != "ATE")?.filter((item) =>{
               if(busqueda == ""){
                 return item
               }else if(
@@ -427,7 +421,8 @@ function Documentos(props) {
         <TablePagination
           rowsPerPageOptions={[5, 10, 30]}
           component="div"
-          count={rowsPend.filter((item) =>{
+          
+          count={arrayRow?.filter(ele => ele.STSSOLI != "ATE")?.filter((item) =>{
               if(busqueda == ""){
                 return item
               }else if(
@@ -453,6 +448,8 @@ function Documentos(props) {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </TableContainer>
+      
+      
       {/* ////////////////////////////////////////////// */}
       <div style={{ margin: 15, color: '#396388'  }}>
         <Typography variant="h6" noWrap style={{ color: '#396388',textTransform:"uppercase" }}>
@@ -503,8 +500,11 @@ function Documentos(props) {
             </TableRow>
           </TableHead>
           <TableBody className="table">
-            {/* {rowsPend.map((row) => ( */}
-            {rowsAte.filter((item) =>{
+            {arrayRow?.filter(ele => descPerf == 'SUPERVISOR' ?
+             ele.STSSOLI != "PEN" && ele.STSSOLI != "BLO" && ele.STSSOLI != "NCP" :
+             ele.STSSOLI != "PEN" && ele.STSSOLI != "BLO" && ele.STSSOLI != "NCP" && ele.NOMUSR == nomusr
+             )
+            .filter((item) =>{
               if(busquedaAte == ""){
                 return item
               }else if(
@@ -579,7 +579,11 @@ function Documentos(props) {
         <TablePagination
           rowsPerPageOptions={[5, 10, 30]}
           component="div"
-          count={rowsAte.filter((item) =>{
+          count={arrayRow?.filter(ele => descPerf == 'SUPERVISOR' ?
+          ele.STSSOLI != "PEN" && ele.STSSOLI != "BLO" && ele.STSSOLI != "NCP" :
+          ele.STSSOLI != "PEN" && ele.STSSOLI != "BLO" && ele.STSSOLI != "NCP" && ele.NOMUSR == nomusr
+          )
+          .filter(ele => ele.STSSOLI != "PEN" && ele.STSSOLI != "BLO" && ele.STSSOLI != "NCP").filter((item) =>{
             if(busquedaAte == ""){
               return item
             }else if(

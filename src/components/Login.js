@@ -46,17 +46,20 @@ const Login = (props) => {
   };
 
   const onBlur = async (e) => {
+    if(!user.cCodUsr) return
     const res = await axios.post(
       "https://emergencia24horas.segurospiramide.com/node/express/servicios/api/ValidarRegistro",
       { cCodUsr: user.cCodUsr }
     );
+    if (res.data[0].OBSER == null ) {
+      setOpen(true)
+      setMsnAlert('USUARIO INVALIDO')
+      return;
+    }
     if (res.data[0].RESULTADO == "S") {
-    //  https://emergencia24horas.segurospiramide.com/node/express/servicios
-    //  alert(res.data[0].OBSER)
       await setActPass(false)
       await setActBtn(false)
     } else {
-    //  alert(JSON.stringify(res.data[0].OBSER))
      setOpen(true)
      setMsnAlert(res.data[0].OBSER)
       await setActPass(true)
@@ -66,14 +69,21 @@ const Login = (props) => {
 
   const onSubmit =async (e) => {
     e.preventDefault();
-    //login(user);
+
     const res = await axios.post(
       "https://emergencia24horas.segurospiramide.com/node/express/servicios/api/AutenticarUsuario",
       user
     );
-    await sessionStorage.setItem("DATA",JSON.stringify(res.data.data))
-    await sessionStorage.setItem("TOKEN",JSON.stringify(res.data.token))
-    await props.history.push('/Home')
+  
+    // if(res.data.data.PASSWORD == user.cPassword){
+      await sessionStorage.setItem("DATA",JSON.stringify(res.data.data))
+      await sessionStorage.setItem("TOKEN",JSON.stringify(res.data.token))
+      await props.history.push('/Home')
+    // }else{
+    //   setOpen(true)
+    //   setMsnAlert('CONTRASEÑA INVALIDA')
+    // }
+    
   };
 
   return (
