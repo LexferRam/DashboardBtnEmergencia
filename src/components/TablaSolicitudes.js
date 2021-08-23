@@ -76,14 +76,14 @@ function Documentos(props) {
   
   
   //SWR
-  const fetcher = url => axios.post('https://emergencia24horas.segurospiramide.com/node/express/servicios/api/BuscaTodasSolicitudes',{
+  const fetcher = url => axios.post('http://10.128.49.125:5000/api/BuscaTodasSolicitudes',{
     "cStsSoli": 0,
     "dFecDesde": "",
     "dFecHasta": "",
     "cCodUsr": "0"
   }).then(res => res.data)
 
-  const {data} = useSWR('/api/BuscaTodasSolicitudes',fetcher,{refreshInterval:5000})
+  const {data} = useSWR('/api/BuscaTodasSolicitudes',fetcher,{refreshInterval:4000})
   const dataOrdenada = data?.sort( (a, b) => a - b )
   const arrayRow = dataOrdenada?.map((item) => {
     return {
@@ -114,7 +114,6 @@ function Documentos(props) {
       EMAILASEG: item.EMAILASEG
     };
   })
-  console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$'+JSON.stringify(arrayRow)) 
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -142,68 +141,28 @@ function Documentos(props) {
     const descPerf = JSON.parse(sessionStorage.getItem("DATA")).DESCPERFIL;
    
     setOpenBd(true)
-    const res = await axios.post("https://emergencia24horas.segurospiramide.com/node/express/servicios/api/BuscaSolicitud", {
+    //Busca la solicitud para verificar su estatus
+    const res = await axios.post("http://10.128.49.125:5000/api/BuscaSolicitud", {
       "nIdSolicitud": row.id
     });
+    //verifica si la solicitud ya fué atendida, si fue atendida no permite tomarla
     if(res.data[0].STSSOLI == "ATE"){
       setOpenBd(false)
       setOpenA(true)
       setMsnAlert(`Ésta Solicitud ya fué atendida`)
     }
+    //Si no ha sido atendida se verifican 3 cosas: 
     else if(res.data[0].STSSOLI == "PEN" || descPerf == "SUPERVISOR" || res.data[0].CODUSR == codUsuario){
       setOpenBd(false)
       setOpen(true);
-      const res = await axios.post("https://emergencia24horas.segurospiramide.com/node/express/servicios/api/AtiendeSolicitud", {
+      await axios.post("http://10.128.49.125:5000/api/AtiendeSolicitud", {
         "nIdSolicitud": row.id,
         "cStsSoli": "BLO",
         "cTipoAtencion": "",
         "cObservacion": "",
         "cCodUsr": codUsuario
       });
-      const fetchData = async () => {
-        const res = await axios.post('https://emergencia24horas.segurospiramide.com/node/express/servicios/api/BuscaTodasSolicitudes', {
-          "cStsSoli": 0,
-          "dFecDesde": "",
-          "dFecHasta": "",
-          "cCodUsr": "0"
-        })
-        const arrayRow = res.data.map((item) => {
-          return {
-            id: item.IDSOLICITUD,
-            NUMID: item.NUMID,
-            NOMBRE: item.NOMBRE,
-            DESCPAIS: item.DESCPAIS,
-            DESCESTADO: item.DESCESTADO,
-            DESCCIUDAD: item.DESCCIUDAD,
-            DIRECCION: item.DIRECCION,
-            PUNTOREFERENCIA: item.PUNTOREFERENCIA,
-            CELULAR: item.CELULAR,
-            TELEFHAB: item.TELEFHAB,
-            STSSOLI: item.STSSOLI,
-            FECSTS: item.FECSTS,
-            FECREG: item.FECREG,
-            CODUSR:item.CODUSR,
-            NOMUSR:item.NOMUSR,
-            LATITUD: item.LATITUD,
-            LONGITUD: item.LONGITUD,
-            EMPRESA: item.EMPRESA,
-            DESCRIPATENCION: item.DESCRIPATENCION,
-            INDCONTASESOR: item.INDCONTASESOR,
-            OBSERVACION: item.OBSERVACION,
-            NOMBRE_INTER: item.NOMBRE_INTER,
-            CELULARASESOR: item.CELULARASESOR,
-            DESCSTATUS: item.DESCSTATUS,
-            EMAILASEG: item.EMAILASEG
-          };
-        })
-        setRows(arrayRow.filter(ele => ele.STSSOLI != "ATE"))
-        if(descPerf == "SUPERVISOR"){
-          setRowsAte(arrayRow.filter(ele => ele.STSSOLI != "PEN" && ele.STSSOLI != "BLO" && ele.STSSOLI != "NCP"))
-       }else{ 
-          setRowsAte(arrayRow.filter(ele => ele.STSSOLI != "PEN" && ele.STSSOLI != "BLO" && ele.CODUSR == codUsuario && ele.STSSOLI != "NCP"))
-       }
-      }
-      fetchData();
+
     }else{
       setOpenBd(false)
       setOpenA(true)
@@ -251,7 +210,7 @@ function Documentos(props) {
           setRowsAte(arrayRow.filter(ele => ele.STSSOLI != "PEN" && ele.STSSOLI != "BLO" && ele.CODUSR == codUsuario && ele.STSSOLI != "NCP"))
        }
       }
-      fetchData();
+      //fetchData();
     }
   }
   const abrirMapa =async () =>{
@@ -419,7 +378,7 @@ function Documentos(props) {
           </TableBody>
         </Table>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 30]}
+          rowsPerPageOptions={[6, 10, 30]}
           component="div"
           
           count={arrayRow?.filter(ele => ele.STSSOLI != "ATE")?.filter((item) =>{
@@ -577,7 +536,7 @@ function Documentos(props) {
           </TableBody>
         </Table>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 30]}
+          rowsPerPageOptions={[6, 10, 30]}
           component="div"
           count={arrayRow?.filter(ele => descPerf == 'SUPERVISOR' ?
           ele.STSSOLI != "PEN" && ele.STSSOLI != "BLO" && ele.STSSOLI != "NCP" :

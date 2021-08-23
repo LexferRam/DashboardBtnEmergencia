@@ -93,7 +93,7 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
       setOpenA(true)
     }else{
       setOpenBd(true)
-      const res = await axios.post("https://emergencia24horas.segurospiramide.com/node/express/servicios/api/BuscaSolicitud", {
+      const res = await axios.post("http://10.128.49.125:5000/api/BuscaSolicitud", {
         "nIdSolicitud": row.id
       });
       if(res.data[0].STSSOLI == "ATE"){
@@ -101,7 +101,7 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
         setOpenA(true)
         setMsnAlert(`Ésta Solicitud ya fué atendida`)
         setOpenBd(true)
-        const res = await axios.post('https://emergencia24horas.segurospiramide.com/node/express/servicios/api/BuscaTodasSolicitudes', {
+        const res = await axios.post('http://10.128.49.125:5000/api/BuscaTodasSolicitudes', {
           "cStsSoli": 0,
           "dFecDesde": "",
           "dFecHasta": "",
@@ -144,7 +144,7 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
         setOpenBd(false)
       }else{
         if(servicio == "NC"){
-          const res = await axios.post("https://emergencia24horas.segurospiramide.com/node/express/servicios/api/AtiendeSolicitud", {
+          const res = await axios.post("http://10.128.49.125:5000/api/AtiendeSolicitud", {
             "nIdSolicitud": row.id,
             "cStsSoli": "NCP",
             "cTipoAtencion": servicio,
@@ -152,7 +152,7 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
             "cCodUsr": codUsuario
           });
           const fetchData = async () => {
-            const res = await axios.post('https://emergencia24horas.segurospiramide.com/node/express/servicios/api/BuscaTodasSolicitudes', {
+            const res = await axios.post('http://10.128.49.125:5000/api/BuscaTodasSolicitudes', {
               "cStsSoli": 0,
               "dFecDesde": "",
               "dFecHasta": "",
@@ -197,7 +197,7 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
           }
         fetchData();
         }else{
-          const res = await axios.post("https://emergencia24horas.segurospiramide.com/node/express/servicios/api/AtiendeSolicitud", {
+          const res = await axios.post("http://10.128.49.125:5000/api/AtiendeSolicitud", {
             "nIdSolicitud": row.id,
             "cStsSoli": "ATE",
             "cTipoAtencion": servicio,
@@ -205,7 +205,7 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
             "cCodUsr": codUsuario
           });
           const fetchData = async () => {
-            const res = await axios.post('https://emergencia24horas.segurospiramide.com/node/express/servicios/api/BuscaTodasSolicitudes', {
+            const res = await axios.post('http://10.128.49.125:5000/api/BuscaTodasSolicitudes', {
               "cStsSoli": 0,
               "dFecDesde": "",
               "dFecHasta": "",
@@ -256,15 +256,15 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
   }
   const desbloquearSoli = async (row) => {
     setOpenBd(true)
-      const codUsuario = JSON.parse(sessionStorage.getItem("DATA")).CODUSR;
+    const codUsuario = JSON.parse(sessionStorage.getItem("DATA")).CODUSR;
     const descPerf = JSON.parse(sessionStorage.getItem("DATA")).DESCPERFIL;
-    const res = await axios.post("https://emergencia24horas.segurospiramide.com/node/express/servicios/api/BuscaSolicitud", {
+    const res = await axios.post("http://10.128.49.125:5000/api/BuscaSolicitud", {
       "nIdSolicitud": row.id
     });
     if(res.data[0].STSSOLI == "ATE"){
       setOpenA(true)
       setMsnAlert(`Ésta Solicitud ya fué atendida`)
-      const res = await axios.post('https://emergencia24horas.segurospiramide.com/node/express/servicios/api/BuscaTodasSolicitudes', {
+      const res = await axios.post('http://10.128.49.125:5000/api/BuscaTodasSolicitudes', {
         "cStsSoli": 0,
         "dFecDesde": "",
         "dFecHasta": "",
@@ -309,14 +309,14 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
       await setOpen(false);
       setOpenBd(false)
     }else{
-        const res1 = await axios.post("https://emergencia24horas.segurospiramide.com/node/express/servicios/api/AtiendeSolicitud", {
+        const res1 = await axios.post("http://10.128.49.125:5000/api/AtiendeSolicitud", {
           "nIdSolicitud": rowsSelecc.id,
           "cStsSoli": "PEN",
           "cTipoAtencion": "",
           "cObservacion": "",
           "cCodUsr": ""
         });
-        const res = await axios.post('https://emergencia24horas.segurospiramide.com/node/express/servicios/api/BuscaTodasSolicitudes', {
+        const res = await axios.post('http://10.128.49.125:5000/api/BuscaTodasSolicitudes', {
           "cStsSoli": 0,
           "dFecDesde": "",
           "dFecHasta": "",
@@ -361,6 +361,7 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
       setOpenBd(false)
     }
   }
+  
   useEffect(() => {
     setFila(rowsSelecc)
   }, [])

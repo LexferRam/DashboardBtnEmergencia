@@ -48,7 +48,7 @@ const Login = (props) => {
   const onBlur = async (e) => {
     if(!user.cCodUsr) return
     const res = await axios.post(
-      "https://emergencia24horas.segurospiramide.com/node/express/servicios/api/ValidarRegistro",
+      "http://10.128.49.125:5000/api/ValidarRegistro",
       { cCodUsr: user.cCodUsr }
     );
     if (res.data[0].OBSER == null ) {
@@ -71,18 +71,18 @@ const Login = (props) => {
     e.preventDefault();
 
     const res = await axios.post(
-      "https://emergencia24horas.segurospiramide.com/node/express/servicios/api/AutenticarUsuario",
+      "http://10.128.49.125:5000/api/AutenticarUsuario",
       user
     );
   
-    // if(res.data.data.PASSWORD == user.cPassword){
+    if(res.data.data.PASSWORD == user.cPassword){
       await sessionStorage.setItem("DATA",JSON.stringify(res.data.data))
       await sessionStorage.setItem("TOKEN",JSON.stringify(res.data.token))
       await props.history.push('/Home')
-    // }else{
-    //   setOpen(true)
-    //   setMsnAlert('CONTRASEÑA INVALIDA')
-    // }
+    }else{
+      setOpen(true)
+      setMsnAlert('CONTRASEÑA INVALIDA')
+    }
     
   };
 
