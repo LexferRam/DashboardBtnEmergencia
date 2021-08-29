@@ -11,9 +11,9 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 export default function(){
     return (
-        <div style={{ display: 'flex', flexDirection:'row', justifyContent:'space-around',marginRight:"9%" }}>
+        <div style={{ display: 'flex', flexDirection:'row',marginRight:"9%" }}>
             {/* <div style={{marginRight:"9%"}}> */}
-              <a href="https://asegurabilidadsegurospiramide.web.app/" target="_blank" style={{textDecoration:'none'}}>
+              <a href="https://asegurabilidadsegurospiramide.web.app/" target="_blank" style={{textDecoration:'none',marginRight:"3%"}}>
               {/* <ButtonBase>
                 <Tooltip title="Consulta de asegurabilidad Seguros Pirámide">
                   <img src={logoPira} style={{ width:50,margin:5,height:40 }}/>
@@ -32,7 +32,7 @@ export default function(){
                 </Button>
               </a>
 
-              <a href="https://asegurabilidadoceanica.web.app/" target="_blank" style={{textDecoration:'none'}}>
+              <a href="https://asegurabilidadoceanica.web.app/" target="_blank" style={{textDecoration:'none',marginRight:"3%"}}>
               {/* <ButtonBase>
                 <Tooltip title="Consulta de asegurabilidad Oceánica de Seguros">
                   <img src={logoOcea} style={{ width:50,margin:5,height:45 }}/>
@@ -51,7 +51,7 @@ export default function(){
                 </Button>
               </a>
              
-              <a href="https://emergencia24hsegurospiramide.web.app/" target="_blank" style={{textDecoration:'none'}}>
+              <a href="https://emergencia24hsegurospiramide.web.app/" target="_blank" style={{textDecoration:'none',marginRight:"3%"}}>
                 {/* <ButtonBase>
                   <Tooltip title="Botón de emergencia Pirámide Seguros ">
                       <img src={BtnPira} style={{ width:30,margin:5,height:30 }}/>
@@ -70,7 +70,7 @@ export default function(){
                 </Button>
               </a>
 
-              <a href="https://emergencia24hoceanicadeseguros.web.app/" target="_blank" style={{textDecoration:'none'}}>
+              <a href="https://emergencia24hoceanicadeseguros.web.app/" target="_blank" style={{textDecoration:'none',marginRight:"3%"}}>
                 {/* <ButtonBase>
                   <Tooltip title="Botón de emergencia Oceánica de Seguros ">
                     <img src={BtnOcea} style={{ width:30,margin:5,height:30 }}/>
@@ -90,42 +90,30 @@ export default function(){
               </a>
 
 
-              <a href="http://186.24.0.86:7777/forms/frmservlet?config=piramide" target="_blank" style={{textDecoration:'none'}}>
-              {/* <ButtonBase>
-                <Tooltip title="Ir a Sistema de ACSEL Pirámide">
-                  <img src={Apira} style={{ width:60,height:50 }}/>
-                </Tooltip>
-              </ButtonBase> */}
+              {/* <a href="http://186.24.0.86:7777/forms/frmservlet?config=piramide" target="_blank" style={{textDecoration:'none',marginRight:"3%"}}>
               <Button
                   size="small"
                   variant="outlined"
                   color="default"
-                  // className={classes.button}
                   startIcon={<img src={Apira} 
                   style={{ width:30,margin:5,height:30}} />}
                   style={{ fontSize:10, borderRadius:"50px"}}
                 >
                  Ir ACSEL Pirámide
                 </Button>
-              </a>
+              </a> */}
 
-              <a href="http://186.24.0.86:7777/forms/frmservlet?config=oceanica" target="_blank" style={{textDecoration:'none'}}>
-                {/* <ButtonBase>
-                  <Tooltip title="Ir a Sistema de ACSEL Oceánica">
-                    <img src={Aocea} style={{ width:60,height:50 }}/>
-                  </Tooltip>
-                </ButtonBase> */}
+              {/* <a href="http://186.24.0.86:7777/forms/frmservlet?config=oceanica" target="_blank" style={{textDecoration:'none',marginRight:"3%"}}>
                 <Button
                   size="small"
                   variant="outlined"
                   color="default"
-                  // className={classes.button}
                   startIcon={<img src={Aocea} style={{ width:30,margin:5,height:30}} />}
                   style={{ fontSize:10, borderRadius:"50px"}}
                 >
                  Ir ACSEL Oceánica
                 </Button>
-              </a>
+              </a> */}
               
             {/* </div> */}
         </div>

@@ -15,24 +15,52 @@ import AuthContext from "../Context/AuthContext/AuthContext";
 
 import { RowingSharp } from '@material-ui/icons';
 
-const servicios = [
-  {
-    value: 'ST',
-    label: 'Servicio Telemedicina',
-  },
-  {
-    value: 'AD',
-    label: 'Atención Domiciliaria',
-  },
-  {
-    value: 'SA',
-    label: 'Servicio Ambulancia',
-  },
-  {
-    value: 'NC',
-    label: 'No se pudo contactar',
-  },
-];
+const BASE_URL = process.env.REACT_APP_ENV == 'production' ? 
+process.env.REACT_APP_URL_PROD : 
+process.env.REACT_APP_URL_DESA;
+
+// const servicios = [
+//   {
+//     value: '07', //OMT
+//     label: '7 días de tratamiento',
+//   },
+//   {
+//     value: 'OM', //OMT
+//     label: 'Orientación Médica Virtual',
+//   },
+//   {
+//     value: 'AM', //TRAS
+//     label: 'Atención Médica in-Situ',
+//   },
+//   {
+//     value: 'SA', //AMDC
+//     label: 'Traslado en Ambulancia',
+//   },
+//   {
+//     value: 'LA', //HOMC
+//     label: 'Laboratorio de Emergencia en casa',
+//   },
+//   {
+//     value: 'RX', //NOSC
+//     label: 'Rayos X en casa',
+//   },
+//   {
+//     value: 'HO', //NOAP
+//     label: 'Hospitalización Domicialiaria',
+//   },
+//   {
+//     value: 'HO', //NOAP
+//     label: '2da opinón Médica',
+//   },
+//   {
+//     value: 'NA', //NOAP
+//     label: 'No Aplica Atención',
+//   },
+//   {
+//     value: 'NC', //NOAP
+//     label: 'No se Pudo Contactar',
+//   },
+// ];
 
 const styles = (theme) => ({
   root: {
@@ -78,6 +106,7 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
   const [fila, setFila] = useState(false);
   const [observacion, setObservacion] = useState('');
   const [servicio, setServicio] = useState('');
+  const [servicios, setServicios] = useState([])
   const hendleChangeObs = (event) => {
     setObservacion(event.target.value);
   };
@@ -93,7 +122,7 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
       setOpenA(true)
     }else{
       setOpenBd(true)
-      const res = await axios.post("http://10.128.49.125:5000/api/BuscaSolicitud", {
+      const res = await axios.post(`${BASE_URL}/BuscaSolicitud`, {
         "nIdSolicitud": row.id
       });
       if(res.data[0].STSSOLI == "ATE"){
@@ -101,7 +130,7 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
         setOpenA(true)
         setMsnAlert(`Ésta Solicitud ya fué atendida`)
         setOpenBd(true)
-        const res = await axios.post('http://10.128.49.125:5000/api/BuscaTodasSolicitudes', {
+        const res = await axios.post(`${BASE_URL}/BuscaTodasSolicitudes`, {
           "cStsSoli": 0,
           "dFecDesde": "",
           "dFecHasta": "",
@@ -144,7 +173,7 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
         setOpenBd(false)
       }else{
         if(servicio == "NC"){
-          const res = await axios.post("http://10.128.49.125:5000/api/AtiendeSolicitud", {
+          const res = await axios.post(`${BASE_URL}/AtiendeSolicitud`, {
             "nIdSolicitud": row.id,
             "cStsSoli": "NCP",
             "cTipoAtencion": servicio,
@@ -152,7 +181,7 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
             "cCodUsr": codUsuario
           });
           const fetchData = async () => {
-            const res = await axios.post('http://10.128.49.125:5000/api/BuscaTodasSolicitudes', {
+            const res = await axios.post(`${BASE_URL}/BuscaTodasSolicitudes`, {
               "cStsSoli": 0,
               "dFecDesde": "",
               "dFecHasta": "",
@@ -197,7 +226,7 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
           }
         fetchData();
         }else{
-          const res = await axios.post("http://10.128.49.125:5000/api/AtiendeSolicitud", {
+          const res = await axios.post(`${BASE_URL}/AtiendeSolicitud`, {
             "nIdSolicitud": row.id,
             "cStsSoli": "ATE",
             "cTipoAtencion": servicio,
@@ -205,7 +234,7 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
             "cCodUsr": codUsuario
           });
           const fetchData = async () => {
-            const res = await axios.post('http://10.128.49.125:5000/api/BuscaTodasSolicitudes', {
+            const res = await axios.post(`${BASE_URL}/BuscaTodasSolicitudes`, {
               "cStsSoli": 0,
               "dFecDesde": "",
               "dFecHasta": "",
@@ -258,13 +287,13 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
     setOpenBd(true)
     const codUsuario = JSON.parse(sessionStorage.getItem("DATA")).CODUSR;
     const descPerf = JSON.parse(sessionStorage.getItem("DATA")).DESCPERFIL;
-    const res = await axios.post("http://10.128.49.125:5000/api/BuscaSolicitud", {
+    const res = await axios.post(`${BASE_URL}/BuscaSolicitud`, {
       "nIdSolicitud": row.id
     });
     if(res.data[0].STSSOLI == "ATE"){
       setOpenA(true)
       setMsnAlert(`Ésta Solicitud ya fué atendida`)
-      const res = await axios.post('http://10.128.49.125:5000/api/BuscaTodasSolicitudes', {
+      const res = await axios.post(`${BASE_URL}/BuscaTodasSolicitudes`, {
         "cStsSoli": 0,
         "dFecDesde": "",
         "dFecHasta": "",
@@ -309,14 +338,14 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
       await setOpen(false);
       setOpenBd(false)
     }else{
-        const res1 = await axios.post("http://10.128.49.125:5000/api/AtiendeSolicitud", {
+        const res1 = await axios.post(`${BASE_URL}/AtiendeSolicitud`, {
           "nIdSolicitud": rowsSelecc.id,
           "cStsSoli": "PEN",
           "cTipoAtencion": "",
           "cObservacion": "",
           "cCodUsr": ""
         });
-        const res = await axios.post('http://10.128.49.125:5000/api/BuscaTodasSolicitudes', {
+        const res = await axios.post(`${BASE_URL}/BuscaTodasSolicitudes`, {
           "cStsSoli": 0,
           "dFecDesde": "",
           "dFecHasta": "",
@@ -364,6 +393,12 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
   
   useEffect(() => {
     setFila(rowsSelecc)
+
+    const obtenerServiciosPrestados = async() => {
+      const {data} = await axios.post("https://emergencia24horas.segurospiramide.com/node/express/servicios/api/BuscarTipotencion")
+      setServicios(data)
+    }
+    obtenerServiciosPrestados()
   }, [])
 
   return (
@@ -541,8 +576,8 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
                 style={{ width: "100%" }}
               >
                 {servicios.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
+                  <MenuItem key={option.CODIGO} value={option.CODIGO}>
+                    {option.DESCRIPCION}
                   </MenuItem>
                 ))}
               </TextField>

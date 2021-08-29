@@ -26,6 +26,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const BASE_URL = process.env.REACT_APP_ENV == 'production' ? 
+process.env.REACT_APP_URL_PROD : 
+process.env.REACT_APP_URL_DESA;
+
 const Login = (props) => {
   const classes = useStyles();
   const { login,
@@ -48,7 +52,7 @@ const Login = (props) => {
   const onBlur = async (e) => {
     if(!user.cCodUsr) return
     const res = await axios.post(
-      "http://10.128.49.125:5000/api/ValidarRegistro",
+      `${BASE_URL}/ValidarRegistro`,
       { cCodUsr: user.cCodUsr }
     );
     if (res.data[0].OBSER == null ) {
@@ -71,7 +75,7 @@ const Login = (props) => {
     e.preventDefault();
 
     const res = await axios.post(
-      "http://10.128.49.125:5000/api/AutenticarUsuario",
+      `${BASE_URL}/AutenticarUsuario`,
       user
     );
   

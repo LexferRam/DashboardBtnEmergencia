@@ -49,6 +49,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const BASE_URL = process.env.REACT_APP_ENV == 'production' ? 
+process.env.REACT_APP_URL_PROD : 
+process.env.REACT_APP_URL_DESA;
+
 function Documentos(props) {
   const [rowsPend, setRows] = useState([])
   const [rowsAte, setRowsAte] = useState([])
@@ -76,14 +80,14 @@ function Documentos(props) {
   
   
   //SWR
-  const fetcher = url => axios.post('http://10.128.49.125:5000/api/BuscaTodasSolicitudes',{
+  const fetcher = url => axios.post(`${BASE_URL}/BuscaTodasSolicitudes`,{
     "cStsSoli": 0,
     "dFecDesde": "",
     "dFecHasta": "",
     "cCodUsr": "0"
   }).then(res => res.data)
 
-  const {data} = useSWR('/api/BuscaTodasSolicitudes',fetcher,{refreshInterval:4000})
+  const {data, loading} = useSWR('/api/BuscaTodasSolicitudes',fetcher,{refreshInterval:2000})
   const dataOrdenada = data?.sort( (a, b) => a - b )
   const arrayRow = dataOrdenada?.map((item) => {
     return {
@@ -142,7 +146,7 @@ function Documentos(props) {
    
     setOpenBd(true)
     //Busca la solicitud para verificar su estatus
-    const res = await axios.post("http://10.128.49.125:5000/api/BuscaSolicitud", {
+    const res = await axios.post(`${BASE_URL}/BuscaSolicitud`, {
       "nIdSolicitud": row.id
     });
     //verifica si la solicitud ya fué atendida, si fue atendida no permite tomarla
@@ -155,7 +159,7 @@ function Documentos(props) {
     else if(res.data[0].STSSOLI == "PEN" || descPerf == "SUPERVISOR" || res.data[0].CODUSR == codUsuario){
       setOpenBd(false)
       setOpen(true);
-      await axios.post("http://10.128.49.125:5000/api/AtiendeSolicitud", {
+      await axios.post(`${BASE_URL}/AtiendeSolicitud`, {
         "nIdSolicitud": row.id,
         "cStsSoli": "BLO",
         "cTipoAtencion": "",
@@ -270,6 +274,7 @@ function Documentos(props) {
             <TableRow>
               <TableCell align="center">Nro. Solicitud</TableCell>
               <TableCell align="center" className={classes.none}>Estatus solicitud</TableCell>
+              <TableCell align="center">Nro. Cédula</TableCell>
               <TableCell align="center" >Estatus solicitud</TableCell>
               <TableCell align="center" >Operador</TableCell>
               <TableCell align="center">Nombre</TableCell>
@@ -286,7 +291,6 @@ function Documentos(props) {
               
               <TableCell align="center" className={classes.none}>Celular</TableCell>
               <TableCell align="center" className={classes.none}>Telf.Habitación</TableCell>
-              <TableCell align="center" className={classes.none}>C.I</TableCell>
               <TableCell align="center" className={classes.none}>Latitud</TableCell>
               <TableCell align="center" className={classes.none}>Longitud</TableCell>
               <TableCell align="center" className={classes.none}>Acción</TableCell>
@@ -300,7 +304,7 @@ function Documentos(props) {
               }else if(
                 // alert(item.DESCSTATUS)
                 item.id.toString().includes(busqueda) ||
-                JSON.stringify(item.DESCSTATUS).includes(busqueda.toUpperCase()) || //STSSOLI
+                JSON.stringify(item.DESCSTATUS).includes(busqueda.toUpperCase()) || 
                 JSON.stringify(item.STSSOLI).includes(busqueda.toUpperCase()) ||
                 JSON.stringify(item.NOMUSR).includes(busqueda.toUpperCase()) ||
                 JSON.stringify(item.NOMBRE).includes(busqueda.toUpperCase()) ||
@@ -312,15 +316,16 @@ function Documentos(props) {
                 JSON.stringify(item.FECSTS).includes(busqueda.toUpperCase()) ||
                 JSON.stringify(item.EMPRESA).includes(busqueda.toUpperCase()) 
                 ){
-                return item
-              }
-            }).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-              return (
-                <TableRow key={row.id}>
+                  return item
+                }
+              }).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                return (
+                  <TableRow key={row.id}>
                   <TableCell component="th" scope="row" className={classes.none}>
                     {row.id}
                   </TableCell>
                   <TableCell align="center">{row.id}</TableCell>
+                  <TableCell align="center">{row.NUMID}</TableCell>
                   <TableCell align="center" className={classes.none}>{row.DESCSTATUS}</TableCell>
                   <TableCell align="center" >{
                   row.STSSOLI== "NCP" ? ("NO SE PUDO CONTACTAR"):row.STSSOLI== "PEN" ? ("PENDIENTE"):("BLOQUEADO")
@@ -345,7 +350,6 @@ function Documentos(props) {
                  
                  <TableCell align="center" className={classes.none}>{row.NOMBRE_INTER}</TableCell>
                   <TableCell align="center" className={classes.none}>{row.CELULARASESOR}</TableCell>
-                  <TableCell align="center" className={classes.none}>{row.NUMID}</TableCell>
                   <TableCell align="center" className={classes.none}>{row.PUNTOREFERENCIA}</TableCell>
                   <TableCell align="center" className={classes.none}>{row.CELULAR}</TableCell>
                   <TableCell align="center" className={classes.none}>{row.TELEFHAB}</TableCell>
@@ -438,6 +442,7 @@ function Documentos(props) {
           <TableHead>
             <TableRow>
             <TableCell align="center">Nro. Solicitud</TableCell>
+            <TableCell align="center">Nro. Cédula</TableCell>
               <TableCell align="center" className={classes.none}>Estatus solicitud</TableCell>
               <TableCell align="center">Nombre</TableCell>
               <TableCell align="center">Operador</TableCell>
@@ -477,7 +482,8 @@ function Documentos(props) {
                 JSON.stringify(item.DIRECCION).includes(busquedaAte.toUpperCase()) ||
                 JSON.stringify(item.FECREG).includes(busquedaAte.toUpperCase()) ||
                 JSON.stringify(item.FECSTS).includes(busquedaAte.toUpperCase()) ||
-                JSON.stringify(item.EMPRESA).includes(busquedaAte.toUpperCase()) 
+                JSON.stringify(item.EMPRESA).includes(busquedaAte.toUpperCase()) || //DESCRIPATENCION
+                JSON.stringify(item.DESCRIPATENCION).includes(busquedaAte.toUpperCase())
                 ){
                 return item
               }
@@ -488,6 +494,7 @@ function Documentos(props) {
                     {row.id}
                   </TableCell>
                   <TableCell align="center">{row.id}</TableCell>
+                  <TableCell align="center" >{row.NUMID}</TableCell>
                   <TableCell align="center" className={classes.none}>{row.STSSOLI}</TableCell>
                   <TableCell align="center">{row.NOMBRE}</TableCell>
                   <TableCell align="center">{row.NOMUSR}</TableCell>
@@ -506,7 +513,6 @@ function Documentos(props) {
                   </TableCell>
                   )}
                  <TableCell align="center">{row.DESCRIPATENCION}</TableCell>
-                  <TableCell align="center" className={classes.none}>{row.NUMID}</TableCell>
                   <TableCell align="center" className={classes.none}>{row.PUNTOREFERENCIA}</TableCell>
                   <TableCell align="center" >{row.CELULAR}</TableCell>
                   <TableCell align="center" >{row.EMAILASEG}</TableCell>
@@ -556,7 +562,8 @@ function Documentos(props) {
               JSON.stringify(item.DIRECCION).includes(busquedaAte.toUpperCase()) ||
               JSON.stringify(item.FECREG).includes(busquedaAte.toUpperCase()) ||
               JSON.stringify(item.FECSTS).includes(busquedaAte.toUpperCase()) ||
-              JSON.stringify(item.EMPRESA).includes(busquedaAte.toUpperCase())   
+              JSON.stringify(item.EMPRESA).includes(busquedaAte.toUpperCase()) || //DESCRIPATENCION
+              JSON.stringify(item.DESCRIPATENCION).includes(busquedaAte.toUpperCase())   
               ){
               return item
             }
