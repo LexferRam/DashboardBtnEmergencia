@@ -9,6 +9,9 @@ const ExcelColumn = ExportExcel.ExcelColumn;
 
 function Exportarexcel({ enviarjsonGrid, titulo }) {
 
+  console.log(enviarjsonGrid)
+  console.log(titulo)
+
   return (
     <div className="btnExportarExcel">
       <ExcelFile
@@ -20,11 +23,14 @@ function Exportarexcel({ enviarjsonGrid, titulo }) {
         }
         filename={titulo}
       >
-        <ExcelSheet data={enviarjsonGrid} name={titulo}>
-          {enviarjsonGrid[0] && Object.keys(enviarjsonGrid[0]).map(columna => (
-            <ExcelColumn label={columna} value={columna} />
-          ))}
-        </ExcelSheet>
+        {/* {(enviarjsonGrid && enviarjsonGrid !== null && enviarjsonGrid !== undefined) && ( */}
+          <ExcelSheet data={enviarjsonGrid} name={titulo}>
+            {enviarjsonGrid[0] && Object.keys(enviarjsonGrid[0]).map(columna => (
+              <ExcelColumn label={columna} value={columna} />
+            ))}
+          </ExcelSheet>
+        {/* )} */}
+
       </ExcelFile>
     </div>
   );

@@ -17,6 +17,11 @@ const useStyles = makeStyles((theme) => ({
     display: 'none'
   }
 }));
+
+const BASE_URL = process.env.REACT_APP_ENV == 'production' ? 
+process.env.REACT_APP_URL_PROD : 
+process.env.REACT_APP_URL_DESA;
+
 const AuthState = (props) => {
   const classes = useStyles();
   const [codUser, setCodUser] = useState("");
@@ -32,7 +37,7 @@ const AuthState = (props) => {
   const login = async (user) => {
     setIsLoaded(false);
     const res = await axios.post(
-      "https://emergencia24horas.segurospiramide.com/node/express/servicios/api/AutenticarUsuario",
+      `${BASE_URL}//AutenticarUsuario`,
       user
     );
     await sessionStorage.setItem("DATA",JSON.stringify(res.data.data))
@@ -50,7 +55,7 @@ const AuthState = (props) => {
   const estaAutenticado = async (user) => {
     // setIsLoaded(false);
     const res = await axios.post(
-      "https://emergencia24horas.segurospiramide.com/node/express/servicios/api/autenticado",
+      `${BASE_URL}//autenticado`,
       {},
            localStorage.getItem("TOKEN")
       

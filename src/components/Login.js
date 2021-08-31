@@ -55,17 +55,17 @@ const Login = (props) => {
       `${BASE_URL}/ValidarRegistro`,
       { cCodUsr: user.cCodUsr }
     );
-    if (res.data[0].OBSER == null ) {
+    if (res.data.C_Datos[0].OBSER == null ) {
       setOpen(true)
       setMsnAlert('USUARIO INVALIDO')
       return;
     }
-    if (res.data[0].RESULTADO == "S") {
+    if (res.data.C_Datos[0].RESULTADO == "S") {
       await setActPass(false)
       await setActBtn(false)
     } else {
      setOpen(true)
-     setMsnAlert(res.data[0].OBSER)
+     setMsnAlert(res.data.C_Datos[0].OBSER)
       await setActPass(true)
       await setActBtn(true)
     }
@@ -79,9 +79,10 @@ const Login = (props) => {
       user
     );
   
-    if(res.data.data.PASSWORD == user.cPassword){
-      await sessionStorage.setItem("DATA",JSON.stringify(res.data.data))
-      await sessionStorage.setItem("TOKEN",JSON.stringify(res.data.token))
+    console.log(res)
+    if(res.data.C_Datos[0].PASSWORD == user.cPassword){
+      await sessionStorage.setItem("DATA",JSON.stringify(res.data.C_Datos[0]))
+      await sessionStorage.setItem("TOKEN",JSON.stringify(res.data.C_Datos[0].token))
       await props.history.push('/Home')
     }else{
       setOpen(true)

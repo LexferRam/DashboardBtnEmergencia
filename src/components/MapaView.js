@@ -20,6 +20,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const BASE_URL = process.env.REACT_APP_ENV == 'production' ? 
+process.env.REACT_APP_URL_PROD : 
+process.env.REACT_APP_URL_DESA;
+
 function MapaView() {
   const classes = useStyles();
   const [places, setPlaces] = useState([])
@@ -27,14 +31,14 @@ function MapaView() {
 
     useEffect(() => {
       const fetchData = async() =>{
-          const res = await axios.post('https://emergencia24horas.segurospiramide.com/node/express/servicios/api/BuscaTodasSolicitudes', {
-              "cStsSoli": 0,
+          const res = await axios.post(`${BASE_URL}/BuscaTodasSolicitudes`, {
+              "cStsSoli": "0",
               "dFecDesde": "",
               "dFecHasta": "",
               "cCodUsr":"0"
           })
           // console.log(res.data)
-          setPlaces(res.data)
+          setPlaces(res.data.AtencionDomi_cur)
           setOpenBd(false)
       }
       fetchData();

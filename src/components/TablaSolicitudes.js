@@ -81,13 +81,13 @@ function Documentos(props) {
   
   //SWR
   const fetcher = url => axios.post(`${BASE_URL}/BuscaTodasSolicitudes`,{
-    "cStsSoli": 0,
+    "cStsSoli": "0",
     "dFecDesde": "",
     "dFecHasta": "",
     "cCodUsr": "0"
-  }).then(res => res.data)
+  }).then(res => res.data.AtencionDomi_cur)
 
-  const {data, loading} = useSWR('/api/BuscaTodasSolicitudes',fetcher,{refreshInterval:2000})
+  const {data, loading} = useSWR('/BuscaTodasSolicitudes',fetcher,{refreshInterval:2000})
   const dataOrdenada = data?.sort( (a, b) => a - b )
   const arrayRow = dataOrdenada?.map((item) => {
     return {
@@ -150,13 +150,16 @@ function Documentos(props) {
       "nIdSolicitud": row.id
     });
     //verifica si la solicitud ya fué atendida, si fue atendida no permite tomarla
-    if(res.data[0].STSSOLI == "ATE"){
+    if(res.data.AtencionDomi_cur[0].STSSOLI == "ATE"){
       setOpenBd(false)
       setOpenA(true)
       setMsnAlert(`Ésta Solicitud ya fué atendida`)
     }
     //Si no ha sido atendida se verifican 3 cosas: 
-    else if(res.data[0].STSSOLI == "PEN" || descPerf == "SUPERVISOR" || res.data[0].CODUSR == codUsuario){
+    else if(
+      res.data.AtencionDomi_cur[0].STSSOLI == "PEN" || 
+      // descPerf == "SUPERVISOR" || 
+      res.data.AtencionDomi_cur[0].CODUSR == codUsuario){
       setOpenBd(false)
       setOpen(true);
       await axios.post(`${BASE_URL}/AtiendeSolicitud`, {
@@ -170,51 +173,8 @@ function Documentos(props) {
     }else{
       setOpenBd(false)
       setOpenA(true)
-      setMsnAlert(`Solicitud bloqueada por ${res.data[0].NOMUSR}`)
-      const fetchData = async () => {
-        const res = await axios.post(process.env.REACT_APP_BASE_API_URL+'/api/BuscaTodasSolicitudes', {
-          "cStsSoli": 0,
-          "dFecDesde": "",
-          "dFecHasta": "",
-          "cCodUsr": "0"
-        })
-        const arrayRow = res.data.map((item) => {
-          return {
-            id: item.IDSOLICITUD,
-            NUMID: item.NUMID,
-            NOMBRE: item.NOMBRE,
-            DESCPAIS: item.DESCPAIS,
-            DESCESTADO: item.DESCESTADO,
-            DESCCIUDAD: item.DESCCIUDAD,
-            DIRECCION: item.DIRECCION,
-            PUNTOREFERENCIA: item.PUNTOREFERENCIA,
-            CELULAR: item.CELULAR,
-            TELEFHAB: item.TELEFHAB,
-            STSSOLI: item.STSSOLI,
-            FECSTS: item.FECSTS,
-            FECREG: item.FECREG,
-            CODUSR:item.CODUSR,
-            NOMUSR:item.NOMUSR,
-            LATITUD: item.LATITUD,
-            LONGITUD: item.LONGITUD,
-            EMPRESA: item.EMPRESA,
-            DESCRIPATENCION: item.DESCRIPATENCION,
-            INDCONTASESOR: item.INDCONTASESOR,
-            OBSERVACION: item.OBSERVACION,
-            NOMBRE_INTER: item.NOMBRE_INTER,
-            CELULARASESOR: item.CELULARASESOR,
-            DESCSTATUS: item.DESCSTATUS,
-            EMAILASEG: item.EMAILASEG
-          };
-        })
-        setRows(arrayRow.filter(ele => ele.STSSOLI != "ATE"))
-        if(descPerf == "SUPERVISOR"){
-          setRowsAte(arrayRow.filter(ele => ele.STSSOLI != "PEN" && ele.STSSOLI != "BLO" && ele.STSSOLI != "NCP"))
-       }else{ 
-          setRowsAte(arrayRow.filter(ele => ele.STSSOLI != "PEN" && ele.STSSOLI != "BLO" && ele.CODUSR == codUsuario && ele.STSSOLI != "NCP"))
-       }
-      }
-      //fetchData();
+      setMsnAlert(`Solicitud bloqueada por ${res.data.AtencionDomi_cur[0].NOMUSR}`)
+     
     }
   }
   const abrirMapa =async () =>{
@@ -249,23 +209,25 @@ function Documentos(props) {
       <div style={{ margin: 15, color: '#396388' }}>
         <BotonesAppsExternas />
         <Typography variant="h6" noWrap style={{ color: '#396388', textTransform: "uppercase", marginTop: 30 }}>
-            Solicitudes Pendientes
+            Solicitudes Pendientes: <b> {data ? (data.filter(ele => ele.STSSOLI != "ATE").length) : 0} </b>
         </Typography>
         <div style={{ display: 'flex' }}>
           <form noValidate autoComplete="off" style={{ marginTop: 10 }}>
-            <TextField
-              name="busqueda"
-              value={busqueda}
-              onChange={onChange}
-              label="Buscar"
-              // variant="outlined"
-              type="text"
-            />
+            {data && (
+              <TextField
+                name="busqueda"
+                value={busqueda}
+                onChange={onChange}
+                label="Buscar"
+                // variant="outlined"
+                type="text"
+              />
+            )}
           </form>
           {/* <BtnExcel rowsPend={rowsPend} /> */}
-          <ExportarExcel 
+          <ExportarExcel
           titulo="Solicitudes Pendientes" 
-          enviarjsonGrid={rowsPend} />
+          enviarjsonGrid={data ? (data.filter(ele => ele.STSSOLI !== "ATE")) : []} />
         </div>
       </div>
       <TableContainer component={Paper} style={{boxShadow: "10px 10px 10px 0 rgb(0 0 0 / 12%)"}}>
@@ -356,7 +318,7 @@ function Documentos(props) {
                   <TableCell align="center" className={classes.none}>{row.STSSOLI}</TableCell>
                   <TableCell align="center" className={classes.none}>{row.LATITUD}</TableCell>
                   <TableCell align="center" className={classes.none}>{row.LONGITUD}</TableCell>
-                  <TableCell align="center" style={{display:"flex", justifyContent:"space-between"}} >
+                  <TableCell align="center" >
                     <IconButton aria-label="descargar" size="small" onClick={() => {
                       rowSelect(row)
                       bloqueaSoli(row)
@@ -414,10 +376,18 @@ function Documentos(props) {
       
       
       {/* ////////////////////////////////////////////// */}
-      <div style={{ margin: 15, color: '#396388'  }}>
-        <Typography variant="h6" noWrap style={{ color: '#396388',textTransform:"uppercase" }}>
-          Solicitudes Atendidas
-       </Typography>
+      <div style={{ margin: 15, color: '#396388' }}>
+        <Typography variant="h6" noWrap style={{ color: '#396388', textTransform: "uppercase" }}>
+          Solicitudes Atendidas :
+          <b>
+            {
+              data ?
+                (data.filter(ele => descPerf == 'SUPERVISOR' ?
+                  ele.STSSOLI === "ATE" :
+                  ele.STSSOLI == "ATE" && ele.NOMUSR == nomusr).length) : 0
+            }
+          </b>
+        </Typography>
        <div style={{ display: 'flex' }}>
           <form noValidate autoComplete="off" style={{ marginTop: 10 }}>
             <TextField
@@ -429,11 +399,18 @@ function Documentos(props) {
               type="text"
             />
           </form>
-          {/* <BtnExcelAte rowsAte={rowsAte}/>  */}
-          <ExportarExcel 
-            titulo="Solicitudes Atendidas" 
-            enviarjsonGrid={rowsAte} 
+          {data && (
+          <ExportarExcel
+            titulo="Solicitudes Atendidas"
+            enviarjsonGrid={data ? (
+              data.filter(ele => descPerf == 'SUPERVISOR' ?
+                ele.STSSOLI == "ATE" :
+                ele.STSSOLI == "ATE" && ele.NOMUSR == nomusr
+              )
+            ) : []
+            }
           />
+          )}
        </div>
        
       </div>

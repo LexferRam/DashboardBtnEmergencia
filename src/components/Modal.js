@@ -125,18 +125,19 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
       const res = await axios.post(`${BASE_URL}/BuscaSolicitud`, {
         "nIdSolicitud": row.id
       });
-      if(res.data[0].STSSOLI == "ATE"){
+      // console.log(res)
+      if(res.data.AtencionDomi_cur[0].STSSOLI == "ATE"){
         setOpenBd(false)
         setOpenA(true)
         setMsnAlert(`Ésta Solicitud ya fué atendida`)
         setOpenBd(true)
         const res = await axios.post(`${BASE_URL}/BuscaTodasSolicitudes`, {
-          "cStsSoli": 0,
+          "cStsSoli": "0",
           "dFecDesde": "",
           "dFecHasta": "",
           "cCodUsr": "0"
         })
-        const arrayRow = res.data.map((item) => {
+        const arrayRow = res.data.AtencionDomi_cur.map((item) => {
           return {
             id: item.IDSOLICITUD,
             NUMID: item.NUMID,
@@ -182,12 +183,12 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
           });
           const fetchData = async () => {
             const res = await axios.post(`${BASE_URL}/BuscaTodasSolicitudes`, {
-              "cStsSoli": 0,
+              "cStsSoli": "0",
               "dFecDesde": "",
               "dFecHasta": "",
               "cCodUsr": "0"
             })
-            const arrayRow = res.data.map((item) => {
+            const arrayRow = res.data.AtencionDomi_cur.map((item) => {
               return {
                 id: item.IDSOLICITUD,
                 NUMID: item.NUMID,
@@ -235,12 +236,12 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
           });
           const fetchData = async () => {
             const res = await axios.post(`${BASE_URL}/BuscaTodasSolicitudes`, {
-              "cStsSoli": 0,
+              "cStsSoli": "0",
               "dFecDesde": "",
               "dFecHasta": "",
               "cCodUsr": "0"
             })
-            const arrayRow = res.data.map((item) => {
+            const arrayRow = res.data.AtencionDomi_cur.map((item) => {
               return {
                 id: item.IDSOLICITUD,
                 NUMID: item.NUMID,
@@ -290,16 +291,16 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
     const res = await axios.post(`${BASE_URL}/BuscaSolicitud`, {
       "nIdSolicitud": row.id
     });
-    if(res.data[0].STSSOLI == "ATE"){
+    if(res.data.AtencionDomi_cur[0].STSSOLI == "ATE"){
       setOpenA(true)
       setMsnAlert(`Ésta Solicitud ya fué atendida`)
       const res = await axios.post(`${BASE_URL}/BuscaTodasSolicitudes`, {
-        "cStsSoli": 0,
+        "cStsSoli": "0",
         "dFecDesde": "",
         "dFecHasta": "",
         "cCodUsr": "0"
       })
-      const arrayRow = res.data.map((item) => {
+      const arrayRow = res.data.AtencionDomi_cur[0].map((item) => {
         return {
           id: item.IDSOLICITUD,
           NUMID: item.NUMID,
@@ -346,12 +347,12 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
           "cCodUsr": ""
         });
         const res = await axios.post(`${BASE_URL}/BuscaTodasSolicitudes`, {
-          "cStsSoli": 0,
+          "cStsSoli": "0",
           "dFecDesde": "",
           "dFecHasta": "",
           "cCodUsr": "0"
         })
-        const arrayRow = res.data.map((item) => {
+        const arrayRow = res.data.AtencionDomi_cur.map((item) => {
           return {
             id: item.IDSOLICITUD,
             NUMID: item.NUMID,
@@ -395,8 +396,8 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
     setFila(rowsSelecc)
 
     const obtenerServiciosPrestados = async() => {
-      const {data} = await axios.post("https://emergencia24horas.segurospiramide.com/node/express/servicios/api/BuscarTipotencion")
-      setServicios(data)
+      const {data} = await axios.post(`${BASE_URL}/BuscarTipotencion`)
+      setServicios(data.Datos_cur)
     }
     obtenerServiciosPrestados()
   }, [])
