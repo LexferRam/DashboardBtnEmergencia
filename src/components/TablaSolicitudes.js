@@ -268,6 +268,7 @@ function Documentos(props) {
                 item.id.toString().includes(busqueda) ||
                 JSON.stringify(item.DESCSTATUS).includes(busqueda.toUpperCase()) || 
                 JSON.stringify(item.STSSOLI).includes(busqueda.toUpperCase()) ||
+                JSON.stringify(item.NUMID).includes(busqueda.toUpperCase()) ||
                 JSON.stringify(item.NOMUSR).includes(busqueda.toUpperCase()) ||
                 JSON.stringify(item.NOMBRE).includes(busqueda.toUpperCase()) ||
                 JSON.stringify(item.INDCONTASESOR).includes(busqueda.toUpperCase()) ||
@@ -354,6 +355,7 @@ function Documentos(props) {
                 item.id.toString().includes(busqueda) ||
                 JSON.stringify(item.DESCSTATUS).includes(busqueda.toUpperCase()) ||
                 JSON.stringify(item.NOMUSR).includes(busqueda.toUpperCase()) ||
+                JSON.stringify(item.NUMID).includes(busqueda.toUpperCase()) ||
                 JSON.stringify(item.NOMBRE).includes(busqueda.toUpperCase()) ||
                 JSON.stringify(item.INDCONTASESOR).includes(busqueda.toUpperCase()) ||
                 JSON.stringify(item.DESCESTADO).includes(busqueda.toUpperCase()) ||
@@ -452,6 +454,7 @@ function Documentos(props) {
                 item.id.toString().includes(busquedaAte) ||
                 JSON.stringify(item.DESCSTATUS).includes(busquedaAte.toUpperCase()) ||
                 JSON.stringify(item.NOMUSR).includes(busquedaAte.toUpperCase()) ||
+                JSON.stringify(item.NUMID).includes(busquedaAte.toUpperCase()) ||
                 JSON.stringify(item.NOMBRE).includes(busquedaAte.toUpperCase()) ||
                 JSON.stringify(item.INDCONTASESOR).includes(busquedaAte.toUpperCase()) ||
                 JSON.stringify(item.DESCESTADO).includes(busquedaAte.toUpperCase()) ||
@@ -532,6 +535,7 @@ function Documentos(props) {
               item.id.toString().includes(busquedaAte) ||
               JSON.stringify(item.DESCSTATUS).includes(busquedaAte.toUpperCase()) ||
               JSON.stringify(item.NOMUSR).includes(busquedaAte.toUpperCase()) ||
+              JSON.stringify(item.NUMID).includes(busquedaAte.toUpperCase()) ||
               JSON.stringify(item.NOMBRE).includes(busquedaAte.toUpperCase()) ||
               JSON.stringify(item.INDCONTASESOR).includes(busquedaAte.toUpperCase()) ||
               JSON.stringify(item.DESCESTADO).includes(busquedaAte.toUpperCase()) ||

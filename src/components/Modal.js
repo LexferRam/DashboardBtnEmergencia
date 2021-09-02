@@ -279,6 +279,7 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
             setOpenBd(false)
           }
         fetchData();
+        setServicio('');
         }
       }
     }
@@ -396,7 +397,10 @@ export default function CustomizedDialogs({setOpen,open,rowsSelecc,setRows, setR
     setFila(rowsSelecc)
 
     const obtenerServiciosPrestados = async() => {
-      const {data} = await axios.post(`${BASE_URL}/BuscarTipotencion`)
+      //const {data} = await axios.post(`${BASE_URL}/BuscarTipoSolAtencion`)//BuscarTipotencion
+     // https://segurospiramide.com/asg-api/dbo/buzon_asistencia/BuscarTipoSolAtencion
+    //  await axios.post(`https://segurospiramide.com/asg-api/dbo/buzon_asistencia/BuscarTipoSolAtencion`)
+     const {data} = await axios.post(`${BASE_URL}/BuscarTipoSolAtencion`)
       setServicios(data.Datos_cur)
     }
     obtenerServiciosPrestados()
